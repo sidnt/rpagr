@@ -9,21 +9,21 @@ object botConfig {
   type BotConfig = Has[botConfig.Service]
 
   trait Service {
-    val botApiKey: String
+    val botToken: String
   }
 
-  val accessBotApiKey = ZIO.access[BotConfig](_.get.botApiKey)
+  val accessBotToken = ZIO.access[BotConfig](_.get.botToken)
   
   /**
     * kind of important concept to assimilate that 
     * the effect to gather api key is performed during layer construction
     * and not in the domain logic program
     */
-  val getBotApiKeyFromConsole = ZLayer.fromEffect(
+  val getBotTokenFromConsole = ZLayer.fromEffect(
     for {
-      apiKey <- putStrLn("enter the bot's api key correctly>") *> getStrLn
+      token <- putStrLn("enter the bot's token correctly>") *> getStrLn
     } yield new botConfig.Service {
-      val botApiKey = apiKey
+      val botToken = token
     }
   )
 
@@ -34,11 +34,11 @@ object botConfigTest extends App {
   import botConfig._
 
   val p0 = for {
-    key <- accessBotApiKey
-    _ <- putStrLn(s"got api key>\n$key")
+    token <- accessBotToken
+    _ <- putStrLn(s"got api key>\n$token")
   } yield ()
 
-  val program = p0.provideCustomLayer(getBotApiKeyFromConsole).exitCode
+  val program = p0.provideCustomLayer(getBotTokenFromConsole).exitCode
 
   def run(args: List[String]): zio.URIO[zio.ZEnv,ExitCode] = program
 

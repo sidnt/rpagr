@@ -17,6 +17,7 @@ object botConfig {
   /**
     * kind of important concept to assimilate that 
     * the effect to gather api key is performed during layer construction
+    * in the bootstrapping of the app, at its very start
     * and not in the domain logic program
     */
   val getBotTokenFromConsole = ZLayer.fromEffect(
